@@ -1,40 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Collective Hybrid Intelligence Labs</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo-group">
+                <img src="img/logo.svg" alt="CHi Labs Logo" class="logo" width="32" height="32">
+                <div class="logo-text">
+                    <span>CHi Labs</span>
+                    <span class="subtitle">Collective Hybrid Intelligence</span>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="experiments.html">Experiments</a>
+                <a href="mailto:" class="cta-button">Let's Connect</a>
+                <div class="theme-toggles">
+                    <button class="theme-toggle moon-mode">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="theme-toggle sun-mode">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M12 4V2M12 22v-2M4 12H2m20 0h-2m-2.5-5.5L19 5m-14 14l1.5-1.5M5 5l1.5 1.5m14 14L19 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
 
-    <main>
-        <article>
-            <h1>Collective Hybrid Intelligence Labs</h1>
+        <main class="content">
+            <div class="main-text">
+                <p>We became proto-cyborgs, with most of humanity having a computer at the tip of their fingers...</p>
+                <p>...we passed the Turing test without even noticing...</p>
+                <p>...AI is rapidly evolving nearing singularity.</p>
+                
+                <div class="vision">
+                    <p>We believe in a near future where AI and the Human Collective will work together in harmony. <span class="highlight">It's up to us to create the future we believe in.</span></p>
+                </div>
+            </div>
 
-            <ol>
-                <li>We became proto-cyborgs, with most of humanity having a computer at the tip of their fingers...</li>
-                <li>We passed the Turing test without even noticing...</li>
-                <li>AI is rapidly evolving nearing singularity...</li>
-            </ol>
+            <div class="buttons">
+                <a href="experiments.html" class="secondary-button">Experiments</a>
+                <a href="mailto:" class="primary-button">Let's Connect</a>
+            </div>
+        </main>
 
-            <p>
-                We believe in a near future where AI and the Human Collective will work together in harmony.
-            </p>
-
-            <p>
-                It's up to us to create the future we believe in.
-            </p>
-        </article>
-        <div class="sections">
-            <a href="mailto:">Join us</a>
-            <a href="experiments.html" target="_blank">Experiments</a>
-        </div>
-    </main>
-
+        <footer>
+            <p>&copy; 2025 Collective Hybrid Intelligence Labs</p>
+            <p>All rights reserved.</p>
+        </footer>
     </div>
+
+    <script>
+        // Theme toggle functionality
+        const html = document.documentElement;
+        const themeToggles = document.querySelectorAll('.theme-toggle');
+
+        // Function to set theme
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+        }
+
+        // Check system preference
+        function getSystemTheme() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        // Initialize theme based on system preference
+        setTheme(getSystemTheme());
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            setTheme(e.matches ? 'dark' : 'light');
+        });
+
+        // Handle manual theme toggles
+        themeToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const newTheme = toggle.classList.contains('moon-mode') ? 'dark' : 'light';
+                setTheme(newTheme);
+            });
+        });
+    </script>
 </body>
 
 </html>
