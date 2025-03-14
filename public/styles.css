@@ -58,8 +58,10 @@ body {
     min-height: 100vh;
     transition: background-color 0.3s ease, color 0.3s ease;
     animation: fadeIn 0.5s ease-out forwards;
+    margin: 0; /* Ensure no margin on body */
 }
 
+/* Container - main wrapper for the whole page */
 .container {
     max-width: 1440px;
     margin: 0 auto;
@@ -67,22 +69,21 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    overflow: hidden; /* Contains the animations */
+    justify-content: flex-start;
+    overflow-x: hidden; /* Allow vertical overflow for the expanding menu */
 }
 
-/* Navigation */
+/* Navigation - changed from fixed to relative */
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    position: relative; /* Change from fixed to relative so it scrolls with content */
+    width: 100%;
     background-color: transparent;
     z-index: 100;
     padding: 2rem 5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 0; /* Ensure no margin on navbar */
 }
 
 .navbar::before {
@@ -99,6 +100,13 @@ body {
 }
 
 .logo-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between; /* Space between logo content and hamburger */
+}
+
+.logo-content {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -176,7 +184,7 @@ body {
     color: var(--accent-color);
     padding: 0.75rem 1.5rem;
     border-radius: 5px;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 [data-theme="dark"] .nav-links a.cta-button {
@@ -185,7 +193,12 @@ body {
 }
 
 .nav-links a.cta-button:hover {
-    transform: translateY(-2px);
+    transform: scale(1.02);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .nav-links a.cta-button:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .theme-toggles {
@@ -233,11 +246,15 @@ body {
 .content {
     max-width: 800px;
     margin: 0 auto;
-    flex: 0 1 auto;
+    padding-top: 0; /* Remove padding that was for fixed header */
+    padding-bottom: 0; /* Remove padding that was for fixed footer */
+    flex: 1 0 auto; /* Allow content to grow but not shrink */
     display: flex;
     flex-direction: column;
     gap: 4rem;
     z-index: 10; /* Ensure content is above other elements during animation */
+    /* Center content vertically when less than viewport height */
+    justify-content: center;
 }
 
 .main-text {
@@ -344,11 +361,9 @@ body {
 
 /* Footer */
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: transparent;
+    position: relative; /* Change from fixed to relative */
+    width: 100%;
+    background-color: var(--bg-color);
     padding: 2rem 5rem;
     color: var(--secondary-text);
     font-size: 0.875rem;
@@ -357,6 +372,8 @@ footer {
     justify-content: space-between;
     opacity: 0;
     animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
+    margin-top: auto; /* Push footer to bottom when content is short */
+    flex-shrink: 0; /* Prevent footer from shrinking */
 }
 
 footer::before {
@@ -367,8 +384,7 @@ footer::before {
     right: 0;
     bottom: 0;
     background-color: var(--bg-color);
-    opacity: 0;
-    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
+    opacity: 1;
     z-index: -1;
 }
 
@@ -383,36 +399,242 @@ footer::before {
     }
 }
 
+/* Hamburger menu for mobile */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    cursor: pointer;
+    z-index: 101;
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
+}
+
+.hamburger-menu span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: var(--text-color);
+    transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out, background-color 0.3s ease;
+    transition-delay: 0s; /* Default delay for closing animation */
+}
+
+/* Hamburger menu active state */
+.hamburger-menu.active span:first-child {
+    transform: translateY(8px) rotate(45deg);
+    transition-delay: 0.05s;
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+    transition-delay: 0.05s;
+}
+
+.hamburger-menu.active span:last-child {
+    transform: translateY(-8px) rotate(-45deg);
+    transition-delay: 0.05s;
+}
+
+/* Mobile navbar styles */
 @media (max-width: 768px) {
+    /* Container adjustments for mobile */
+    .container {
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Navbar adjustments */
     .navbar {
+        position: relative;
         flex-direction: column;
-        gap: 1rem;
-    }
-
-    .nav-links {
-        flex-direction: column;
+        align-items: stretch;
+        padding: 1.5rem 2rem 0;
         width: 100%;
-        gap: 1rem;
+        background-color: var(--bg-color);
+    }
+    
+    /* Ensure logo and hamburger are on same line */
+    .navbar > .logo-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 1.5rem;
+    }
+    
+    /* Prevent logo content from wrapping to multiple lines */
+    .logo-content {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+        max-width: calc(100% - 40px);
+    }
+    
+    /* Make logo smaller on mobile for better fit */
+    .logo {
+        width: 28px;
+        height: 28px;
+        flex-shrink: 0;
+    }
+    
+    /* Adjust logo text for mobile */
+    .logo-text {
+        flex-shrink: 1;
+    }
+    
+    .logo-text .subtitle {
+        font-size: 0.7rem;
+    }
+    
+    /* Show hamburger menu */
+    .hamburger-menu {
+        display: flex;
+        margin-left: auto;
+        flex-shrink: 0;
     }
 
+    /* Nav links styling - flat, integrated design */
+    .nav-links {
+        position: relative;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        background-color: var(--bg-color);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 0;
+        gap: 0; /* Override the desktop gap */
+        opacity: 1; /* Keep full opacity to avoid flicker */
+        margin-top: -1px; /* Remove any gap between navbar and menu */
+        /* Integrate border into the main transition */
+        border-top: 1px solid var(--border-color);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.35s ease-in-out, max-height 0.35s ease-in-out;
+        animation: none; /* Override desktop animation */
+    }
+
+    .nav-links.active {
+        max-height: 500px;
+        transform: scaleY(1);
+        margin-bottom: 0; /* Remove bottom margin to eliminate gap */
+    }
+
+    .nav-links a {
+        font-size: 1.1rem;
+        padding: 1rem 2rem; /* Equal padding for all menu items */
+        width: 100%;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        animation: none; /* Override desktop animation */
+        opacity: 0;
+        transition: opacity 0.4s ease-in-out;
+        transform: translateY(0);
+        display: block; /* Ensure consistent block display */
+    }
+
+    .nav-links.active a {
+        opacity: 1;
+    }
+
+    /* Override the desktop delay settings with mobile-specific ones */
+    .nav-links a:nth-child(1) { transition-delay: 0.05s; }
+    .nav-links a:nth-child(2) { transition-delay: 0.1s; }
+    .nav-links a:nth-child(3) { transition-delay: 0.15s; }
+
+    /* Mobile CTA button styling */
+    .nav-links a.cta-button {
+        margin: 0; /* Remove margin to match other menu items */
+        width: 100%; /* Full width like other items */
+        text-align: left; /* Left align text to match other items */
+        padding: 1rem 2rem; /* Explicitly set the same padding as regular links */
+        border-radius: 0; /* Remove border radius */
+        background-color: #2D2D2D; /* Keep distinct background */
+        color: var(--accent-color); /* Keep distinct text color */
+        border-bottom: 1px solid var(--border-color); /* Consistent bottom border */
+    }
+
+    [data-theme="dark"] .nav-links a.cta-button {
+        background-color: var(--accent-color);
+        color: #2D2D2D;
+    }
+
+    .theme-toggles {
+        margin: 1.5rem 2rem 0.5rem;
+        align-self: flex-start;
+    }
+
+    /* Content spacing adjustments */
+    .content {
+        margin-top: 0;
+        padding: 1rem 2rem;
+        flex-grow: 1; /* Allow content to grow and push footer down */
+        justify-content: flex-start; /* Start from top on mobile */
+    }
+
+    /* Main text adjustments */
     .main-text p {
         font-size: 1rem;
     }
 
+    /* Adjust hamburger animation to be more subtle */
+    .hamburger-menu span {
+        transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out, background-color 0.3s ease;
+        transition-delay: 0s; /* Ensure consistent closing animation with synchronized delay */
+    }
+    
+    /* Update hamburger animation to be smoother */
+    .hamburger-menu.active span:first-child {
+        transform: translateY(8px) rotate(45deg);
+        transition-delay: 0.05s; /* Use same delay for all lines */
+    }
+    
+    .hamburger-menu.active span:nth-child(2) {
+        opacity: 0;
+        transition-delay: 0.05s; /* Use same delay for all lines */
+    }
+    
+    .hamburger-menu.active span:last-child {
+        transform: translateY(-8px) rotate(-45deg);
+        transition-delay: 0.05s; /* Use same delay for all lines */
+    }
+
+    /* Remove mobile overlay */
+    .mobile-overlay {
+        display: none;
+    }
+    
+    /* Button styles for mobile */
     .buttons {
         flex-direction: column;
         width: 100%;
     }
-
+    
     .secondary-button, .primary-button {
         width: 100%;
         text-align: center;
     }
-
+    
+    /* Footer fixes for mobile */
     footer {
+        position: relative;
+        padding: 2rem;
+        margin-top: auto; /* Push to bottom of container */
+        width: 100%;
         flex-direction: column;
         gap: 0.5rem;
         text-align: center;
+        background-color: var(--bg-color);
+        z-index: 1;
+    }
+
+    footer::before {
+        display: none; /* Remove the pseudo-element on mobile */
     }
 }
 

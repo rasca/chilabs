@@ -13,19 +13,31 @@
 
 <body>
     <div class="container">
+        <!-- We don't need the mobile overlay anymore -->
+        
         <nav class="navbar">
             <div class="logo-group">
-                <svg class="logo" width="32" height="32" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path class="logo-path-1" d="M10.538 27.8536C15.3943 27.8536 19.3312 23.9167 19.3312 19.0603C19.3312 14.204 15.3943 10.2671 10.538 10.2671" stroke="currentColor" stroke-width="2"/>
-                    <path class="logo-path-2" d="M10.538 36.9449C20.4153 36.9449 28.4225 28.9377 28.4225 19.0603C28.4225 9.18297 20.4153 1.17578 10.538 1.17578" stroke="currentColor" stroke-width="2"/>
-                    <circle class="logo-circle-1" cx="10.538" cy="18.7377" r="2.53362" fill="currentColor"/>
-                    <circle class="logo-circle-2" cx="28.4225" cy="18.7773" r="2.57316" fill="currentColor"/>
-                </svg>
-                <div class="logo-text">
-                    <span>CHI Labs</span>
-                    <span class="subtitle">Collective Hybrid Intelligence</span>
+                <div class="logo-content">
+                    <svg class="logo" width="32" height="32" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="logo-path-1" d="M10.538 27.8536C15.3943 27.8536 19.3312 23.9167 19.3312 19.0603C19.3312 14.204 15.3943 10.2671 10.538 10.2671" stroke="currentColor" stroke-width="2"/>
+                        <path class="logo-path-2" d="M10.538 36.9449C20.4153 36.9449 28.4225 28.9377 28.4225 19.0603C28.4225 9.18297 20.4153 1.17578 10.538 1.17578" stroke="currentColor" stroke-width="2"/>
+                        <circle class="logo-circle-1" cx="10.538" cy="18.7377" r="2.53362" fill="currentColor"/>
+                        <circle class="logo-circle-2" cx="28.4225" cy="18.7773" r="2.57316" fill="currentColor"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span>CHI Labs</span>
+                        <span class="subtitle">Collective Hybrid Intelligence</span>
+                    </div>
+                </div>
+                
+                <!-- Hamburger Menu Button -->
+                <div class="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </div>
+
             <div class="nav-links">
                 <a href="#" class="active">Home</a>
                 <a href="experiments.html">Experiments</a>
@@ -97,6 +109,25 @@
             toggle.addEventListener('click', () => {
                 const newTheme = toggle.classList.contains('moon-mode') ? 'dark' : 'light';
                 setTheme(newTheme);
+            });
+        });
+
+        // Updated hamburger menu functionality - simplified
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        // Toggle mobile menu
+        hamburgerMenu.addEventListener('click', () => {
+            hamburgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking a nav link
+        const navLinkElements = document.querySelectorAll('.nav-links a');
+        navLinkElements.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerMenu.classList.remove('active');
+                navLinks.classList.remove('active');
             });
         });
     </script>
