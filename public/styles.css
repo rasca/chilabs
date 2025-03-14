@@ -13,6 +13,33 @@
     --accent-color: #90FE6F;
     --button-bg: #F1F1F1;
     --border-color: #E5E5E5;
+    
+    /* Animation timing variables - relative delays */
+    --initial-delay: 1.3s;         /* First paragraph appears after this delay */
+    --paragraph-delay: 1.3s;       /* Delay between paragraphs */
+    --vision-after-p3-delay: 1.3s; /* Vision appears after p3 with this delay */
+    --logo-after-vision-delay: 2.5s; /* Logo appears after vision with this delay */
+    --logo-path2-delay: 0.2s;      /* Delay for second path after first */
+    --logo-circle1-delay: 0.2s;      /* Circle1 appears after logo-path2 with this delay */
+    --logo-circle2-delay: 0.2s;    /* Circle2 appears after circle1 with this delay */
+    --logo-text-delay: 0.2s;       /* Logo text appears after circle2 with this delay */
+    --ui-after-logo-text-delay: 0.1s; /* UI elements appear after logo text with this delay */
+    --buttons-delay: 0.2s;         /* Buttons appear after UI with this delay */
+    --infinite-delay: 1.5s;        /* Infinite animations begin after their initial animation */
+    
+    /* Calculated absolute timings (don't edit these directly) */
+    --p1-time: var(--initial-delay);
+    --p2-time: calc(var(--p1-time) + var(--paragraph-delay));
+    --p3-time: calc(var(--p2-time) + var(--paragraph-delay));
+    --vision-time: calc(var(--p3-time) + var(--vision-after-p3-delay));
+    --logo-start-time: calc(var(--vision-time) + var(--logo-after-vision-delay));
+    --logo-path-2-time: calc(var(--logo-start-time) + var(--logo-path2-delay));
+    --logo-circle-1-time: calc(var(--logo-path-2-time) + var(--logo-circle1-delay));
+    --logo-circle-2-time: calc(var(--logo-circle-1-time) + var(--logo-circle2-delay));
+    --logo-text-time: calc(var(--logo-circle-2-time) + var(--logo-text-delay));
+    --ui-elements-time: calc(var(--logo-text-time) + var(--ui-after-logo-text-delay));
+    --buttons-time: calc(var(--ui-elements-time) + var(--buttons-delay));
+    --infinite-animations-time: calc(var(--logo-start-time) + var(--infinite-delay));
 }
 
 [data-theme="dark"] {
@@ -30,6 +57,7 @@ body {
     background-color: var(--bg-color);
     min-height: 100vh;
     transition: background-color 0.3s ease, color 0.3s ease;
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
 .container {
@@ -40,6 +68,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden; /* Contains the animations */
 }
 
 /* Navigation */
@@ -48,12 +77,25 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background-color: var(--bg-color);
+    background-color: transparent;
     z-index: 100;
     padding: 2rem 5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-color);
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
+    z-index: -1;
 }
 
 .logo-group {
@@ -68,12 +110,18 @@ body {
     width: 32px;
     height: 32px;
     filter: brightness(0) saturate(100%);
+    animation: logoEntrance 1.2s ease-out var(--logo-start-time) forwards, logoPulse 8s ease-in-out infinite var(--infinite-animations-time);
+    transform-origin: center;
+    transition: filter 0.3s ease, color 0.3s ease;
+    opacity: 0; /* Start hidden but become visible during animation */
 }
 
 .logo-text {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    animation: textFadeIn 1.2s ease-out var(--logo-text-time) forwards;
+    opacity: 0;
 }
 
 .logo-text span {
@@ -95,6 +143,8 @@ body {
     display: flex;
     gap: 2rem;
     align-items: center;
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
 }
 
 .nav-links a {
@@ -103,6 +153,14 @@ body {
     font-size: 0.875rem;
     font-weight: 500;
     position: relative;
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
+}
+
+.nav-links a:nth-child(1),
+.nav-links a:nth-child(2),
+.nav-links a:nth-child(3) {
+    animation-delay: var(--ui-elements-time);
 }
 
 .nav-links a.active {
@@ -135,6 +193,8 @@ body {
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
 }
 
 .theme-toggle {
@@ -165,7 +225,8 @@ body {
 }
 
 [data-theme="dark"] .logo {
-    filter: brightness(0) saturate(100%) invert(1);
+    filter: none;
+    color: white;
 }
 
 /* Main Content */
@@ -176,6 +237,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4rem;
+    z-index: 10; /* Ensure content is above other elements during animation */
 }
 
 .main-text {
@@ -184,19 +246,49 @@ body {
     gap: 1.5rem;
 }
 
+/* Paragraph and button animations */
+@keyframes slideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .main-text p {
     font-size: 1.1rem;
     color: var(--text-color);
     line-height: 1.5;
+    opacity: 0;
+    animation: slideDown 0.8s ease-out forwards;
+}
+
+.main-text p:nth-child(1) {
+    animation-delay: var(--p1-time);
+}
+
+.main-text p:nth-child(2) {
+    animation-delay: var(--p2-time);
+}
+
+.main-text p:nth-child(3) {
+    animation-delay: var(--p3-time);
 }
 
 .vision {
     margin-top: 2rem;
+    opacity: 0;
+    animation: slideDown 0.8s ease-out var(--vision-time) forwards;
 }
 
 .vision p {
     color: var(--text-color);
     font-weight: 700;
+    opacity: 0;
+    animation: slideDown 0.8s ease-out var(--vision-time) forwards;
 }
 
 .highlight {
@@ -211,6 +303,8 @@ body {
 .buttons {
     display: flex;
     gap: 1rem;
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--buttons-time) forwards;
 }
 
 .secondary-button, .primary-button {
@@ -254,13 +348,28 @@ footer {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: var(--bg-color);
+    background-color: transparent;
     padding: 2rem 5rem;
     color: var(--secondary-text);
     font-size: 0.875rem;
     font-family: 'DM Mono', monospace;
     display: flex;
     justify-content: space-between;
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-color);
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out var(--ui-elements-time) forwards;
+    z-index: -1;
 }
 
 /* Responsive Design */
@@ -304,6 +413,124 @@ footer {
         flex-direction: column;
         gap: 0.5rem;
         text-align: center;
+    }
+}
+
+/* Logo animations */
+@keyframes logoEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) rotate(-10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes logoPulse {
+    0%, 85%, 100% {
+        transform: scale(1);
+    }
+    90% {
+        transform: scale(1.03);
+    }
+}
+
+@keyframes drawPath {
+    0% {
+        stroke-dashoffset: 100;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes circlePop {
+    0% {
+        r: 0;
+        opacity: 0;
+    }
+    70% {
+        r: 3;
+        opacity: 1;
+    }
+    100% {
+        r: 2.53362;
+        opacity: 1;
+    }
+}
+
+@keyframes subtlePathPulse {
+    0%, 80%, 100% {
+        stroke-width: 2;
+    }
+    85% {
+        stroke-width: 2.3;
+    }
+}
+
+@keyframes subtleCirclePulse1 {
+    0%, 80%, 100% {
+        r: 2.53362;
+    }
+    85% {
+        r: 2.7;
+    }
+}
+
+@keyframes subtleCirclePulse2 {
+    0%, 80%, 100% {
+        r: 2.57316;
+    }
+    85% {
+        r: 2.75;
+    }
+}
+
+.logo-path-1, .logo-path-2 {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: drawPath 1.5s ease var(--logo-start-time) forwards, subtlePathPulse 10s ease-in-out infinite var(--infinite-animations-time);
+    transition: stroke 0.3s ease;
+}
+
+.logo-path-2 {
+    animation-delay: var(--logo-path-2-time), var(--infinite-animations-time);
+}
+
+.logo-circle-1 {
+    animation: circlePop 0.6s ease-out var(--logo-circle-1-time) forwards, subtleCirclePulse1 10s ease-in-out infinite var(--infinite-animations-time);
+    opacity: 0;
+    transition: fill 0.3s ease;
+}
+
+.logo-circle-2 {
+    animation: circlePop 0.6s ease-out var(--logo-circle-2-time) forwards, subtleCirclePulse2 10s ease-in-out infinite var(--infinite-animations-time);
+    opacity: 0;
+    transition: fill 0.3s ease;
+}
+
+@keyframes textFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    30% {
+        opacity: 0.1;
+    }
+    100% {
+        opacity: 1;
     }
 }
 
