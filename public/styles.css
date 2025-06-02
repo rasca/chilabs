@@ -756,3 +756,12 @@ footer::before {
     }
 }
 
+/* Experiments Page */
+.coming-soon .vision p {
+    margin: 0;
+}
+
+.coming-soon .vision p + p {
+    margin-top: 0;
+}
+
